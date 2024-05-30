@@ -4,11 +4,11 @@ Command: npx gltfjsx@6.2.12 ./public/3D_models/handcar_half_top.gltf --keepmater
 */
 
 import * as THREE from 'three'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 import {NodeToyMaterial} from '@nodetoy/react-nodetoy'
-// import {NodeToyMaterial} from '@nodetoy/three-nodetoy'
+// import {NodeToyMaterial as NodeToyMaterialConstructor} from '@nodetoy/three-nodetoy'
 import { data as darkPinkShaderData } from '../../shaders/handcar-top-dark-pink-shader.ts'
 
 type GLTFResult = GLTF & {
@@ -51,7 +51,11 @@ type GLTFResult = GLTF & {
     Caution_LegIKR: THREE.Bone
     Caution_LegIKL: THREE.Bone
   }
-  materials: {}
+  materials: {
+    LightBlue: THREE.MeshPhysicalMaterial
+    DarkPink: THREE.MeshStandardMaterial
+    Teal: THREE.MeshStandardMaterial
+  }
 }
 
 type ActionName = 'Handlebars Up Down' | 'X Bobbing' | 'Caution Bobbing'
@@ -60,6 +64,7 @@ type GLTFActions = Record<ActionName, THREE.AnimationAction>
 type ContextType = Record<string, React.ForwardRefExoticComponent<JSX.IntrinsicElements['mesh'] | JSX.IntrinsicElements['skinnedMesh'] | JSX.IntrinsicElements['bone']>>
 
 export default function HandcarTopHalf(props: JSX.IntrinsicElements['group']) {
+  const [clicked, setClicked] = useState(false);
   const group = useRef<THREE.Group>()
   const { nodes, materials, animations } = useGLTF('./public/3D_models/handcar_half_top.gltf') as GLTFResult
   const { actions } = useAnimations<GLTFActions>(animations, group)
@@ -81,10 +86,8 @@ export default function HandcarTopHalf(props: JSX.IntrinsicElements['group']) {
     uniforms: uniforms
   })
 
-  console.log('NEW', newMaterial)
-  // console.log(darkPink)
   return (
-    <group ref={group} {...props} dispose={null}>
+    <group ref={group} {...props} dispose={null} onClick={() => (setClicked(!clicked), console.log(clicked))}>
       <group name="Scene">
         <group name="Handlebars_Armature" position={[0, 0.816, 0]}>
           <primitive object={nodes.Lever} />
@@ -100,17 +103,17 @@ export default function HandcarTopHalf(props: JSX.IntrinsicElements['group']) {
           <primitive object={nodes.X_KneeIKL} />
           <primitive object={nodes.X_LegIKR} />
           <primitive object={nodes.X_LegIKL} />
-          <skinnedMesh name="X_ArmL" geometry={nodes.X_ArmL.geometry} material={newMaterial} skeleton={nodes.X_ArmL.skeleton}>
-            {/* <NodeToyMaterial data={darkPinkShaderData} /> */}
+          <skinnedMesh name="X_ArmL" geometry={nodes.X_ArmL.geometry} skeleton={nodes.X_ArmL.skeleton}>
+            <NodeToyMaterial data={darkPinkShaderData} />
           </skinnedMesh>
-          <skinnedMesh name="X_ArmR" geometry={nodes.X_ArmR.geometry}  material={newMaterial} skeleton={nodes.X_ArmR.skeleton}>
-            
+          <skinnedMesh name="X_ArmR" geometry={nodes.X_ArmR.geometry} skeleton={nodes.X_ArmR.skeleton}>
+            <NodeToyMaterial data={darkPinkShaderData} />
           </skinnedMesh>
-          <skinnedMesh name="X_LegL" geometry={nodes.X_LegL.geometry}  material={newMaterial} skeleton={nodes.X_LegL.skeleton}>
-            
+          <skinnedMesh name="X_LegL" geometry={nodes.X_LegL.geometry} skeleton={nodes.X_LegL.skeleton}>
+            <NodeToyMaterial data={darkPinkShaderData} />
           </skinnedMesh>
-          <skinnedMesh name="X_LegR" geometry={nodes.X_LegR.geometry}  material={newMaterial} skeleton={nodes.X_LegR.skeleton}>
-            
+          <skinnedMesh name="X_LegR" geometry={nodes.X_LegR.geometry} skeleton={nodes.X_LegR.skeleton}>
+            <NodeToyMaterial data={darkPinkShaderData} />
           </skinnedMesh>
         </group>
         <group name="Caution_Armature" position={[0, 0.065, -1.125]}>
@@ -123,10 +126,18 @@ export default function HandcarTopHalf(props: JSX.IntrinsicElements['group']) {
           <primitive object={nodes.Caution_KneeIKL} />
           <primitive object={nodes.Caution_LegIKR} />
           <primitive object={nodes.Caution_LegIKL} />
-          <skinnedMesh name="Caution_ArmL" geometry={nodes.Caution_ArmL.geometry} material={nodes.Caution_ArmL.material} skeleton={nodes.Caution_ArmL.skeleton} />
-          <skinnedMesh name="Caution_ArmR" geometry={nodes.Caution_ArmR.geometry} material={nodes.Caution_ArmR.material} skeleton={nodes.Caution_ArmR.skeleton} />
-          <skinnedMesh name="Caution_LegL" geometry={nodes.Caution_LegL.geometry} material={nodes.Caution_LegL.material} skeleton={nodes.Caution_LegL.skeleton} />
-          <skinnedMesh name="Caution_LegR" geometry={nodes.Caution_LegR.geometry} material={nodes.Caution_LegR.material} skeleton={nodes.Caution_LegR.skeleton} />
+          <skinnedMesh name="Caution_ArmL" geometry={nodes.Caution_ArmL.geometry} skeleton={nodes.Caution_ArmL.skeleton}>
+            <NodeToyMaterial data={darkPinkShaderData} />
+          </skinnedMesh>
+          <skinnedMesh name="Caution_ArmR" geometry={nodes.Caution_ArmR.geometry} skeleton={nodes.Caution_ArmR.skeleton}>
+            <NodeToyMaterial data={darkPinkShaderData} />
+          </skinnedMesh>
+          <skinnedMesh name="Caution_LegL" geometry={nodes.Caution_LegL.geometry} skeleton={nodes.Caution_LegL.skeleton}>
+            <NodeToyMaterial data={darkPinkShaderData} />
+          </skinnedMesh>
+          <skinnedMesh name="Caution_LegR" geometry={nodes.Caution_LegR.geometry} skeleton={nodes.Caution_LegR.skeleton}>
+            <NodeToyMaterial data={darkPinkShaderData} />
+          </skinnedMesh>
         </group>
         <mesh name="Handlebar_Frame" castShadow receiveShadow geometry={nodes.Handlebar_Frame.geometry} material={nodes.Handlebar_Frame.material} />
         <mesh name="Handlebar_Axle_Pivot" castShadow receiveShadow geometry={nodes.Handlebar_Axle_Pivot.geometry} material={nodes.Handlebar_Axle_Pivot.material} />
